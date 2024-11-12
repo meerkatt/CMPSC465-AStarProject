@@ -24,6 +24,12 @@ public class Node implements Comparable{
 
     }
 
+    public Node(int x, int y)
+    {
+        this.xCoord = x;
+        this.yCoord = y;
+    }
+
     public Node(Node[] neighbors, Node previous)
     {
         this.neighborNodes = neighbors;
@@ -80,6 +86,11 @@ public class Node implements Comparable{
     public void setNeighbors(Node north, Node east, Node south, Node west)
     {
         this.neighborNodes = new Node[]{north, east, south, west};
+    }
+
+    public void deleteNeighbors()
+    {
+        this.neighborNodes = new Node[4];
     }
 
     public void setPreviousNode(Node previous)
@@ -156,4 +167,5 @@ public class Node implements Comparable{
         }
         return false;
     }
+
 }

@@ -11,16 +11,23 @@ public class Maze extends JPanel implements ActionListener {
     final private Cell[][] maze;
     private Cell startingPoint;
     private Cell endPoint;
+    private Node startNode;
+    private Node endNode;
+    private Node[][] nodeGraph;
 
     public Maze(int width, int height) {
         super();
         maze = new Cell[width][height];
+
+        
         
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 maze[i][j] = new Cell(i, j);
+                nodeGraph[i][j] = new Node(i,j); 
             }
         }
+
 
         // Add Mouse Listener for press detection
         addMouseListener(new MouseAdapter() {
@@ -74,10 +81,11 @@ public class Maze extends JPanel implements ActionListener {
         // TODO: Generate the maze
         // simple logic for now for each cell it has a 30% chance of being a wall
         this.resetMaze();
-        for (Cell[] mazeRow : maze) {
-            for (Cell cell : mazeRow) {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[0].length; j++) {
                 if (Math.random() < 0.3) {
-                    cell.setWall(true);
+                    maze[i][j].setWall(true);
+                    nodeGraph[i][j].deleteNeighbors();
                 }
             }
         }
@@ -85,9 +93,10 @@ public class Maze extends JPanel implements ActionListener {
     }
 
     private void resetMaze() {
-        for (Cell[] mazeRow : maze) {
-            for (Cell cell : mazeRow) {
-                cell.setWall(false);
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[0].length; j++) {
+                maze[i][j].setWall(false);
+                setGraphNeighbors(maze.length, maze[0].length);
             }
         }
     }
@@ -97,6 +106,26 @@ public class Maze extends JPanel implements ActionListener {
         for (Cell[] mazeRow : maze) {
             for (Cell cell : mazeRow) {
                 cell.render(g);
+            }
+        }
+    }
+
+    public void setGraphNeighbors(int width, int height)
+    {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                Node n = null;
+                Node e = null;
+                Node s = null;
+                Node w = null;
+
+                if(j-1 > 0){ n = nodeGraph[i][j-1]; }
+                if(i+1 < width){ e = nodeGraph[i+1][j]; }
+                if(j+1 > 0){ s = nodeGraph[i][j+1]; }
+                if(i-1 < width){ w = nodeGraph[i+1][j]; }
+                
+                nodeGraph[i][j].setNeighbors(n, e, s, w);
+
             }
         }
     }
