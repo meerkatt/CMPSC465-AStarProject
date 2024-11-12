@@ -15,9 +15,12 @@ public class Main{
         gui.show();
         */
 
+
+
         TestCases test = new TestCases();
-        System.out.println(test.creatingNode());
-        System.out.println(test.settingNodeNeighbors());
-        System.out.println(test.settingNodeNeighborsConstructor());
+        System.out.println(test.creatingNodeTest());
+        System.out.println(test.settingNodeNeighborsTest());
+        System.out.println(test.settingNodeNeighborsConstructorTest());
+        System.out.println(test.sortingNodesTest());
     }
 }

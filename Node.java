@@ -1,4 +1,6 @@
-public class Node {
+
+
+public class Node implements Comparable{
     private Node[] neighborNodes; // Order of Nodes: North, East, South, West
 
     private double gCost;
@@ -28,6 +30,46 @@ public class Node {
         this.previousNode = previous;
     }
 
+    //// Comparator
+    public int compareTo(Object otherObject)
+    {
+        Node otherNode = (Node) otherObject;
+        if(this.totalCost < otherNode.getTotalCost())
+        {
+            return -1;
+        }
+        else if (this.totalCost > otherNode.getTotalCost()) 
+        {
+            return 1;
+        }
+        else{
+            if(this.gCost < otherNode.getGCost())
+            {
+                return -1;
+            }
+            else if (this.gCost > otherNode.getGCost()) 
+            {
+                return 1;
+            }
+            else{
+                
+                if(this.hCost > otherNode.getHCost()) 
+                {
+                    return 1;
+                }
+                else if(this.hCost < otherNode.getHCost())
+                {
+                    return -1;
+                }else
+                {
+                    return 0;
+                }
+            }
+        }
+        
+    }
+
+
     //// Mutators
 
     public void setNeighbors(Node[] neighbors)
@@ -43,6 +85,21 @@ public class Node {
     public void setPreviousNode(Node previous)
     {
         this.previousNode = previous;
+    }
+
+    public void setGCost(double gCostValue)
+    {
+        this.gCost = gCostValue;
+    }
+
+    public void setHCost(double hCostValue)
+    {
+        this.hCost = hCostValue;
+    }
+
+    public void setTotalCost(double totalCostValue)
+    {
+        this.totalCost = totalCostValue;
     }
 
     public void setXY(int x, int y)
