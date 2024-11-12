@@ -4,6 +4,7 @@ public class Path{
     private Node startingNode;
     private Node goalNode;
     private Node currentNode;
+    private int nodesVisited;
 
     private ArrayList<Node> availableNodes;
 
@@ -66,22 +67,31 @@ public class Path{
         
     }
 
-    public void traverse(){
+    public Node traverse(){
         while(currentNode != goalNode)
         {
             for(Node element:currentNode.getNeighbors())
             {
                 if(element != null)
                 {
-                    element.setGCost(gCostCalculator(element));
-                    element.setHCost(hCostCalculator(element));
-                    element.setTotalCost(totalCostCalculator(element));
-                    availableNodes.add(element);
+                    if(element.getTotalCost() == 0.0)
+                    {
+                        element.setGCost(gCostCalculator(element));
+                        element.setHCost(hCostCalculator(element));
+                        element.setTotalCost(totalCostCalculator(element));
+                        element.setPreviousNode(currentNode);
+                        availableNodes.add(element);
+                    }
+                    
                 }
             }
             sortNodes(availableNodes);
-
+            Node nextNode = availableNodes.get(0);
+            currentNode = nextNode;
+            nextNode = null;
+            availableNodes.remove(0);
         }
+        return goalNode;
     }
 
 }

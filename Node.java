@@ -144,4 +144,16 @@ public class Node implements Comparable{
     {
         return previousNode;
     }
+
+    ////Methods
+    public boolean isNeighbor(Node checkNode)
+    {
+        for(Node element:neighborNodes){
+            if(element.getXCoord() == checkNode.getXCoord() && element.getYCoord() == checkNode.getYCoord())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
