@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 
 public class Maze extends JPanel implements ActionListener { 
     final private Cell[][] maze;
+    private Cell startingPoint;
+    private Cell endPoint;
 
     public Maze(int width, int height) {
         super();
@@ -43,10 +45,14 @@ public class Maze extends JPanel implements ActionListener {
         int cellX = evt.getX() / Cell.WIDTH;
         int cellY = evt.getY() / Cell.HEIGHT;
         
+        // left click = starting point for pathfinding
+        // right click = end point for pathfinding
         if (evt.getButton() == MouseEvent.BUTTON1) {
             System.out.println("Left Pressed at (" + cellX + ", " + cellY + ")");
+            startingPoint = maze[cellX][cellY];
         } else if (evt.getButton() == MouseEvent.BUTTON3) {
             System.out.println("Right Pressed at (" + cellX + ", " + cellY + ")");
+            endPoint = maze[cellX][cellY];
         }
         
         repaint();
@@ -54,14 +60,42 @@ public class Maze extends JPanel implements ActionListener {
 
     private void handleKeyPress(KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-            System.out.println("Space Pressed");
+            // when space is pressed, generate the maze
+            System.err.println("Generating Maze...");
+            this.generateMaze();
+        } else if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // when enter is pressed, start the pathfinding
+            
+            System.out.println("Enter Pressed");
+        }
+    }
+
+    public void generateMaze() {
+        // TODO: Generate the maze
+        // simple logic for now for each cell it has a 30% chance of being a wall
+        this.resetMaze();
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
+                if (Math.random() < 0.3) {
+                    cell.setWall(true);
+                }
+            }
+        }
+        repaint();
+    }
+
+    private void resetMaze() {
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
+                cell.setWall(false);
+            }
         }
     }
 
     public void render(Graphics g) {
         // Draw the maze
-        for (Cell[] maxRow : maze) {
-            for (Cell cell : maxRow) {
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
                 cell.render(g);
             }
         }
