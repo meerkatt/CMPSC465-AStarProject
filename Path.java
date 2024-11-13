@@ -4,7 +4,7 @@ public class Path{
     private Node startingNode;
     private Node goalNode;
     private Node currentNode;
-    private int nodesVisited;
+    private double nodesVisited;
 
     private ArrayList<Node> availableNodes;
 
@@ -24,9 +24,9 @@ public class Path{
         return distance;
     }
 
-    public double gCostCalculator(Node current)
+    public double gCostCalculator()
     {
-        return distanceCalculator(current.getXCoord(), current.getYCoord(), startingNode.getXCoord(), startingNode.getYCoord());
+        return nodesVisited;
     }
     
     public double hCostCalculator(Node current)
@@ -36,7 +36,7 @@ public class Path{
     
     public double totalCostCalculator(Node current)
     {
-        return gCostCalculator(current) + hCostCalculator(current);
+        return current.getGCost() + hCostCalculator(current);
     }
 
     public void swapNodes(ArrayList<Node> nodeList, int index1, int index2)
@@ -68,6 +68,7 @@ public class Path{
     }
 
     public Node traverse(){
+        nodesVisited = 0;
         while(currentNode != goalNode)
         {
             for(Node element:currentNode.getNeighbors())
@@ -76,7 +77,10 @@ public class Path{
                 {
                     if(element.getTotalCost() == 0.0)
                     {
-                        element.setGCost(gCostCalculator(element));
+                        if(element.getGCost() == 0.0)
+                        {
+                            element.setGCost(gCostCalculator());
+                        }
                         element.setHCost(hCostCalculator(element));
                         element.setTotalCost(totalCostCalculator(element));
                         element.setPreviousNode(currentNode);
@@ -90,6 +94,7 @@ public class Path{
             currentNode = nextNode;
             nextNode = null;
             availableNodes.remove(0);
+            nodesVisited = currentNode.getGCost();
         }
         return goalNode;
     }
