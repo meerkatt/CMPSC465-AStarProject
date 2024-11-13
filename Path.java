@@ -81,20 +81,18 @@ public class Path{
                 Node[] neighbors = currentNode.getNeighbors();
                 if(neighbors != null)
                 {
-                    Node element = neighbors[i];
-                    if(element != null){
-                        if(element.getTotalCost() == 0.0)
+                    if(element.getTotalCost() == 0.0)
+                    {
+                        if(element.getGCost() == 0.0)
                         {
-                            if(element.getGCost() == 0.0)
-                            {
-                                element.setGCost(gCostCalculator());
-                            }
-                            element.setHCost(hCostCalculator(element));
-                            element.setTotalCost(totalCostCalculator(element));
-                            element.setPreviousNode(currentNode);
-                            availableNodes.add(element);
+                            element.setGCost(gCostCalculator());
                         }
+                        element.setHCost(hCostCalculator(element));
+                        element.setTotalCost(totalCostCalculator(element));
+                        element.setPreviousNode(currentNode);
+                        availableNodes.add(element);
                     }
+                    
                 }
             }
             sortNodes(availableNodes);
