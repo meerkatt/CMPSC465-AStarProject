@@ -57,9 +57,11 @@ public class Maze extends JPanel implements ActionListener {
         if (evt.getButton() == MouseEvent.BUTTON1) {
             System.out.println("Left Pressed at (" + cellX + ", " + cellY + ")");
             startingPoint = maze[cellX][cellY];
+            startNode = nodeGraph[cellX][cellY];
         } else if (evt.getButton() == MouseEvent.BUTTON3) {
             System.out.println("Right Pressed at (" + cellX + ", " + cellY + ")");
             endPoint = maze[cellX][cellY];
+            endNode = nodeGraph[cellX][cellY];
         }
         
         repaint();
@@ -86,6 +88,10 @@ public class Maze extends JPanel implements ActionListener {
                 if (Math.random() < 0.3) {
                     maze[i][j].setWall(true);
                     nodeGraph[i][j].deleteNeighbors();
+                    if(j-1 > 0){ nodeGraph[i][j-1].getNeighbors()[2] = null; } //Removing southern neighbor from northern point
+                    if(i+1 < maze.length){ nodeGraph[i+1][j].getNeighbors()[3] = null; } //Removing  western neighbor from eastern point
+                    if(j+1 < maze[0].length){ nodeGraph[i][j+1].getNeighbors()[0] = null; } //Removing northern neighbor from southern point
+                    if(i-1 > 0){ nodeGraph[i+1][j].getNeighbors()[1] = null; } //Removing eastern neighbor from western point 
                 }
             }
         }
@@ -121,8 +127,8 @@ public class Maze extends JPanel implements ActionListener {
 
                 if(j-1 > 0){ n = nodeGraph[i][j-1]; }
                 if(i+1 < width){ e = nodeGraph[i+1][j]; }
-                if(j+1 > 0){ s = nodeGraph[i][j+1]; }
-                if(i-1 < width){ w = nodeGraph[i+1][j]; }
+                if(j+1 < height){ s = nodeGraph[i][j+1]; }
+                if(i-1 > 0){ w = nodeGraph[i+1][j]; }
                 
                 nodeGraph[i][j].setNeighbors(n, e, s, w);
 
