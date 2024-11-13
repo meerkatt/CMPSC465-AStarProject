@@ -2,7 +2,6 @@
 public class Main{
     public static void main(String[] args) {
 
-        /*
         int gridWidth = 20;
         int gridHeight = 20;
         int windowWidth = Cell.WIDTH * (gridWidth + 1) - 8;
@@ -13,14 +12,12 @@ public class Main{
         
         gui.add(maze);
         gui.show();
-        */
 
 
-
-        TestCases test = new TestCases();
-        System.out.println(test.creatingNodeTest());
-        System.out.println(test.settingNodeNeighborsTest());
-        System.out.println(test.settingNodeNeighborsConstructorTest());
-        System.out.println(test.sortingNodesTest());
+        // TestCases test = new TestCases();
+        // System.out.println(test.creatingNodeTest());
+        // System.out.println(test.settingNodeNeighborsTest());
+        // System.out.println(test.settingNodeNeighborsConstructorTest());
+        // System.out.println(test.sortingNodesTest());
     }
 }

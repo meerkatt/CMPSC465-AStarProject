@@ -5,27 +5,31 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class Maze extends JPanel implements ActionListener { 
     final private Cell[][] maze;
+    final private Node[][] nodeGraph;
     private Cell startingCell;
     private Cell endCell;
-
+    private Node startingNode;
+    private Node endNode;
+    
     public Maze(int width, int height) {
         super();
         maze = new Cell[width][height];
-
         nodeGraph = new Node[width][height];
-        
+
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                maze[i][j] = new Cell(i, j);
-                nodeGraph[i][j] = new Node(i,j); 
+                maze[i][j] = new Cell(i, j); // TODO: combine cell and node classes into one
+                nodeGraph[i][j] = new Node(i, j);
             }
         }
-        setGraphNeighbors(width, height);
 
+        setGraphNeighbors(width, height);
 
         // Add Mouse Listener for press detection
         addMouseListener(new MouseAdapter() {
@@ -59,7 +63,6 @@ public class Maze extends JPanel implements ActionListener {
             System.out.println("End point at (" + cellX + ", " + cellY + ")");
             this.setEndCell(cellX, cellY);
         }
-        this.renderPath();
         repaint();
     }
 
@@ -78,6 +81,7 @@ public class Maze extends JPanel implements ActionListener {
     private void setStartingCell(int x, int y) {
         if (startingCell == null) {
             startingCell = maze[x][y];
+            startingNode = nodeGraph[x][y];
             startingCell.setType(CellType.STARTING_CELL);
             return;
         }
@@ -92,12 +96,14 @@ public class Maze extends JPanel implements ActionListener {
         startingCell.setType(CellType.EMPTY);
         // assign the new starting cell
         startingCell = maze[x][y];
+        startingNode = nodeGraph[x][y];
         startingCell.setType(CellType.STARTING_CELL);
     }
 
     private void setEndCell(int x, int y) {
         if (endCell == null) {
             endCell = maze[x][y];
+            endNode = nodeGraph[x][y];
             endCell.setType(CellType.END_CELL);
             return;
         }
@@ -112,25 +118,72 @@ public class Maze extends JPanel implements ActionListener {
         endCell.setType(CellType.EMPTY);
         // assign the new end cell
         endCell = maze[x][y];
+        endNode = nodeGraph[x][y];
         endCell.setType(CellType.END_CELL);
     }
 
-    private void generatePath() {
-        // for each iteration of the A* algorithm,
-        // repaint the maze to visualize the path
-        // finding process
+    public void generatePath() {
+        resetMazePath();
 
-        // TODO: Implement the A* algorithm
+        if (startingCell != null && endCell != null) {
+            Path p = new Path(startingNode, endNode);
+            ArrayList<Node> path = p.traverse();
+
+            // Check if a path exists
+            if (path == null || path.isEmpty()) {
+                System.out.println("No path found!");
+                return;
+            }
+
+            animatePath(path);
+        }
+    }
+
+    // just a helper method to animate the path
+    private void animatePath(ArrayList<Node> path) {
+        // Use an index to keep track of the current node
+        final int[] index = {0}; // Mutable index for lambda expression
+
+        // Timer to animate path traversal with a 100 ms delay
+        Timer timer = new Timer(1 / 60, (ActionEvent e) -> {
+            if (index[0] < path.size()) {
+                Node node = path.get(index[0]);
+                int x1 = node.getXCoord();
+                int y1 = node.getYCoord();
+                maze[x1][y1].setType(CellType.PATH);
+                repaint();
+                index[0]++; // Move to the next node
+            } else {
+                // Stop the timer when all nodes in the path are processed
+                ((Timer) e.getSource()).stop();
+            }
+        });
+        
+        timer.start(); // Start the animation timer
     }
 
     public void generateMaze() {
         // TODO: Generate the maze
         // simple logic for now for each cell it has a 30% chance of being a wall
         this.resetMaze();
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[0].length; j++) {
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
                 if (Math.random() < 0.3) {
                     cell.setType(CellType.WALL);
+                }
+            }
+        }
+        repaint();
+    }
+
+
+    // like resetMaze but only for path cells
+    private void resetMazePath() {
+        // only set path cells to empty
+        for (Cell[] mazeRow : maze) { 
+            for (Cell cell : mazeRow) {
+                if (cell.type == CellType.PATH) {
+                    cell.setType(CellType.EMPTY);
                 }
             }
         }
@@ -143,6 +196,11 @@ public class Maze extends JPanel implements ActionListener {
                 cell.setType(CellType.EMPTY);
             }
         }
+        this.startingCell = null;
+        this.startingNode = null;
+        this.endCell = null;
+        this.endNode = null;
+        repaint();
     }
 
     public void render(Graphics g) {
@@ -154,22 +212,7 @@ public class Maze extends JPanel implements ActionListener {
         }
     }
 
-    public void renderPath(){
-        if(startingPoint != null && endPoint != null){
-            Path p = new Path(startNode,endNode);
-            p.traverse();
-            while(p.getCurrentNode() != startNode)
-            {
-                int x = p.getCurrentNode().getXCoord();
-                int y = p.getCurrentNode().getYCoord();
-
-                maze[x][y].onPath = true;
-            }
-        } 
-    }
-
-    public void setGraphNeighbors(int width, int height)
-    {
+    private void setGraphNeighbors(int width, int height) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 Node n = null;
