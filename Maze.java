@@ -19,7 +19,7 @@ public class Maze extends JPanel implements ActionListener {
         super();
         maze = new Cell[width][height];
 
-        
+        nodeGraph = new Node[width][height];
         
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -27,6 +27,7 @@ public class Maze extends JPanel implements ActionListener {
                 nodeGraph[i][j] = new Node(i,j); 
             }
         }
+        setGraphNeighbors(width, height);
 
 
         // Add Mouse Listener for press detection
@@ -63,7 +64,7 @@ public class Maze extends JPanel implements ActionListener {
             endPoint = maze[cellX][cellY];
             endNode = nodeGraph[cellX][cellY];
         }
-        
+        this.renderPath();
         repaint();
     }
 
@@ -88,10 +89,10 @@ public class Maze extends JPanel implements ActionListener {
                 if (Math.random() < 0.3) {
                     maze[i][j].setWall(true);
                     nodeGraph[i][j].deleteNeighbors();
-                    if(j-1 > 0){ nodeGraph[i][j-1].getNeighbors()[2] = null; } //Removing southern neighbor from northern point
+                    if(j-1 >= 0){ nodeGraph[i][j-1].getNeighbors()[2] = null; } //Removing southern neighbor from northern point
                     if(i+1 < maze.length){ nodeGraph[i+1][j].getNeighbors()[3] = null; } //Removing  western neighbor from eastern point
                     if(j+1 < maze[0].length){ nodeGraph[i][j+1].getNeighbors()[0] = null; } //Removing northern neighbor from southern point
-                    if(i-1 > 0){ nodeGraph[i+1][j].getNeighbors()[1] = null; } //Removing eastern neighbor from western point 
+                    if(i-1 >= 0){ nodeGraph[i-1][j].getNeighbors()[1] = null; } //Removing eastern neighbor from western point 
                 }
             }
         }
@@ -116,6 +117,20 @@ public class Maze extends JPanel implements ActionListener {
         }
     }
 
+    public void renderPath(){
+        if(startingPoint != null && endPoint != null){
+            Path p = new Path(startNode,endNode);
+            p.traverse();
+            while(p.getCurrentNode() != startNode)
+            {
+                int x = p.getCurrentNode().getXCoord();
+                int y = p.getCurrentNode().getYCoord();
+
+                maze[x][y].onPath = true;
+            }
+        } 
+    }
+
     public void setGraphNeighbors(int width, int height)
     {
         for (int i = 0; i < width; i++) {
@@ -125,10 +140,10 @@ public class Maze extends JPanel implements ActionListener {
                 Node s = null;
                 Node w = null;
 
-                if(j-1 > 0){ n = nodeGraph[i][j-1]; }
+                if(j-1 >= 0){ n = nodeGraph[i][j-1]; }
                 if(i+1 < width){ e = nodeGraph[i+1][j]; }
                 if(j+1 < height){ s = nodeGraph[i][j+1]; }
-                if(i-1 > 0){ w = nodeGraph[i+1][j]; }
+                if(i-1 >= 0){ w = nodeGraph[i-1][j]; }
                 
                 nodeGraph[i][j].setNeighbors(n, e, s, w);
 

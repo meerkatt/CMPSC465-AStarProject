@@ -5,6 +5,8 @@ import java.awt.Graphics;
     public int x;
     public int y;
     public boolean isWall = false;
+    public boolean cellVisited = false;
+    public boolean onPath = false;
     public static final int WIDTH = 25;
     public static final int HEIGHT = 25;
 
@@ -14,9 +16,16 @@ import java.awt.Graphics;
     }
     
     public void render(Graphics g) {
-        g.setColor(Color.BLACK);
+        
 
         if (this.isWall) {
+            g.setColor(Color.BLACK);
+            g.fillRect(x * WIDTH, y * HEIGHT, WIDTH, HEIGHT);
+        } else if(this.cellVisited) {
+            g.setColor(Color.YELLOW);
+            g.fillRect(x * WIDTH, y * HEIGHT, WIDTH, HEIGHT);
+        } else if(this.onPath){
+            g.setColor(Color.GREEN);
             g.fillRect(x * WIDTH, y * HEIGHT, WIDTH, HEIGHT);
         } else {
             g.drawRect(x * WIDTH, y * HEIGHT, WIDTH, HEIGHT);

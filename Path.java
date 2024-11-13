@@ -16,6 +16,11 @@ public class Path{
         availableNodes = new ArrayList<Node>();
     }
 
+    public Node getCurrentNode()
+    {
+        return currentNode;
+    }
+
     public double distanceCalculator(int x1, int y1, int x2, int y2)
     {
         double xDifference = Math.abs(x1-x2);
@@ -71,25 +76,29 @@ public class Path{
         nodesVisited = 0;
         while(currentNode != goalNode)
         {
-            for(Node element:currentNode.getNeighbors())
+            for(int i = 0; i < 4; i++)
             {
-                if(element != null)
+                Node[] neighbors = currentNode.getNeighbors();
+                if(neighbors != null)
                 {
-                    if(element.getTotalCost() == 0.0)
-                    {
-                        if(element.getGCost() == 0.0)
+                    Node element = neighbors[i];
+                    if(element != null){
+                        if(element.getTotalCost() == 0.0)
                         {
-                            element.setGCost(gCostCalculator());
+                            if(element.getGCost() == 0.0)
+                            {
+                                element.setGCost(gCostCalculator());
+                            }
+                            element.setHCost(hCostCalculator(element));
+                            element.setTotalCost(totalCostCalculator(element));
+                            element.setPreviousNode(currentNode);
+                            availableNodes.add(element);
                         }
-                        element.setHCost(hCostCalculator(element));
-                        element.setTotalCost(totalCostCalculator(element));
-                        element.setPreviousNode(currentNode);
-                        availableNodes.add(element);
                     }
-                    
                 }
             }
             sortNodes(availableNodes);
+            System.out.println("X: " + availableNodes.get(0).getXCoord() + "Y: " + availableNodes.get(0).getYCoord());
             Node nextNode = availableNodes.get(0);
             currentNode = nextNode;
             nextNode = null;
