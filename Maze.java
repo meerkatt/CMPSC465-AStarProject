@@ -9,11 +9,8 @@ import javax.swing.JPanel;
 
 public class Maze extends JPanel implements ActionListener { 
     final private Cell[][] maze;
-    private Cell startingPoint;
-    private Cell endPoint;
-    private Node startNode;
-    private Node endNode;
-    private Node[][] nodeGraph;
+    private Cell startingCell;
+    private Cell endCell;
 
     public Maze(int width, int height) {
         super();
@@ -56,13 +53,11 @@ public class Maze extends JPanel implements ActionListener {
         // left click = starting point for pathfinding
         // right click = end point for pathfinding
         if (evt.getButton() == MouseEvent.BUTTON1) {
-            System.out.println("Left Pressed at (" + cellX + ", " + cellY + ")");
-            startingPoint = maze[cellX][cellY];
-            startNode = nodeGraph[cellX][cellY];
+            System.out.println("Starting point at (" + cellX + ", " + cellY + ")");
+            this.setStartingCell(cellX, cellY);
         } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            System.out.println("Right Pressed at (" + cellX + ", " + cellY + ")");
-            endPoint = maze[cellX][cellY];
-            endNode = nodeGraph[cellX][cellY];
+            System.out.println("End point at (" + cellX + ", " + cellY + ")");
+            this.setEndCell(cellX, cellY);
         }
         this.renderPath();
         repaint();
@@ -75,9 +70,57 @@ public class Maze extends JPanel implements ActionListener {
             this.generateMaze();
         } else if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // when enter is pressed, start the pathfinding
-            
-            System.out.println("Enter Pressed");
+            System.out.println("Pathfinding...");
+            this.generatePath();
         }
+    }
+
+    private void setStartingCell(int x, int y) {
+        if (startingCell == null) {
+            startingCell = maze[x][y];
+            startingCell.setType(CellType.STARTING_CELL);
+            return;
+        }
+        
+        if (startingCell.type == CellType.WALL ||
+            startingCell.type == CellType.END_CELL
+        ) {
+            System.out.println("Can't set cell as starting cell.");
+            return;
+        }
+        // reset the current starting cell
+        startingCell.setType(CellType.EMPTY);
+        // assign the new starting cell
+        startingCell = maze[x][y];
+        startingCell.setType(CellType.STARTING_CELL);
+    }
+
+    private void setEndCell(int x, int y) {
+        if (endCell == null) {
+            endCell = maze[x][y];
+            endCell.setType(CellType.END_CELL);
+            return;
+        }
+
+        if (endCell.type == CellType.WALL ||
+            endCell.type == CellType.STARTING_CELL
+        ) {
+            System.out.println("Can't set cell as end cell.");
+            return;
+        }
+        // reset the current end cell
+        endCell.setType(CellType.EMPTY);
+        // assign the new end cell
+        endCell = maze[x][y];
+        endCell.setType(CellType.END_CELL);
+    }
+
+    private void generatePath() {
+        // for each iteration of the A* algorithm,
+        // repaint the maze to visualize the path
+        // finding process
+
+        // TODO: Implement the A* algorithm
     }
 
     public void generateMaze() {
@@ -87,12 +130,7 @@ public class Maze extends JPanel implements ActionListener {
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[0].length; j++) {
                 if (Math.random() < 0.3) {
-                    maze[i][j].setWall(true);
-                    nodeGraph[i][j].deleteNeighbors();
-                    if(j-1 >= 0){ nodeGraph[i][j-1].getNeighbors()[2] = null; } //Removing southern neighbor from northern point
-                    if(i+1 < maze.length){ nodeGraph[i+1][j].getNeighbors()[3] = null; } //Removing  western neighbor from eastern point
-                    if(j+1 < maze[0].length){ nodeGraph[i][j+1].getNeighbors()[0] = null; } //Removing northern neighbor from southern point
-                    if(i-1 >= 0){ nodeGraph[i-1][j].getNeighbors()[1] = null; } //Removing eastern neighbor from western point 
+                    cell.setType(CellType.WALL);
                 }
             }
         }
@@ -100,10 +138,9 @@ public class Maze extends JPanel implements ActionListener {
     }
 
     private void resetMaze() {
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[0].length; j++) {
-                maze[i][j].setWall(false);
-                setGraphNeighbors(maze.length, maze[0].length);
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
+                cell.setType(CellType.EMPTY);
             }
         }
     }
