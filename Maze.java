@@ -71,6 +71,7 @@ public class Maze extends JPanel implements ActionListener {
             // when space is pressed, generate the maze
             System.err.println("Generating Maze...");
             this.generateMaze();
+            this.resetMazePath();
         } else if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // when enter is pressed, start the pathfinding
             System.out.println("Pathfinding...");
@@ -191,28 +192,7 @@ public class Maze extends JPanel implements ActionListener {
         repaint();
     }
 
-    private void resetMaze() {
-        for (Cell[] mazeRow : maze) {
-            for (Cell cell : mazeRow) {
-                cell.setType(CellType.EMPTY);
-            }
-        }
-        this.startingCell = null;
-        this.startingNode = null;
-        this.endCell = null;
-        this.endNode = null;
-        repaint();
-    }
-
-    public void render(Graphics g) {
-        // Draw the maze
-        for (Cell[] mazeRow : maze) {
-            for (Cell cell : mazeRow) {
-                cell.render(g);
-            }
-        }
-    }
-
+    // helper function for resetMazePath that resets and sets the neighbors for all nodes in nodeGraph
     private void setGraphNeighbors(int width, int height) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -242,6 +222,29 @@ public class Maze extends JPanel implements ActionListener {
             }
         }
     }
+
+    private void resetMaze() {
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
+                cell.setType(CellType.EMPTY);
+            }
+        }
+        this.startingCell = null;
+        this.startingNode = null;
+        this.endCell = null;
+        this.endNode = null;
+        repaint();
+    }
+
+    public void render(Graphics g) {
+        // Draw the maze
+        for (Cell[] mazeRow : maze) {
+            for (Cell cell : mazeRow) {
+                cell.render(g);
+            }
+        }
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
