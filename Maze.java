@@ -147,8 +147,8 @@ public class Maze extends JPanel implements ActionListener {
         // 1 because we don't want to display the  starting node a as a path
         final int[] index = {1};
 
-        // Timer to animate path traversal with a 100 ms delay
-        Timer timer = new Timer(100, (ActionEvent e) -> {
+        // Timer to animate path traversal with a 25 ms delay
+        Timer timer = new Timer(25, (ActionEvent e) -> {
             if (index[0] < path.size()) {
                 Node node = path.get(index[0]);
                 int x1 = node.getXCoord();
