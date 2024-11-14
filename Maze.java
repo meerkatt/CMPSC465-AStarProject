@@ -187,6 +187,7 @@ public class Maze extends JPanel implements ActionListener {
                 }
             }
         }
+        setGraphNeighbors(maze.length, maze[0].length);
         repaint();
     }
 
@@ -227,6 +228,17 @@ public class Maze extends JPanel implements ActionListener {
                 
                 nodeGraph[i][j].setNeighbors(n, e, s, w);
 
+            }
+        }
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[0].length; j++) {
+
+                if(maze[i][j].type ==CellType.WALL){
+                    if(j-1 >= 0){ nodeGraph[i][j-1].getNeighbors()[2] = null; } //Removing southern neighbor from northern point
+                    if(i+1 < maze.length){ nodeGraph[i+1][j].getNeighbors()[3] = null; } //Removing  western neighbor from eastern point
+                    if(j+1 < maze[0].length){ nodeGraph[i][j+1].getNeighbors()[0] = null; } //Removing northern neighbor from southern point
+                    if(i-1 >= 0){ nodeGraph[i-1][j].getNeighbors()[1] = null; } //Removing eastern neighbor from western point 
+                }
             }
         }
     }

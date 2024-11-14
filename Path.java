@@ -77,13 +77,19 @@ public class Path{
                 }
             }
             sortNodes(availableNodes);
-            System.out.println("X: " + availableNodes.get(0).getXCoord() + "Y: " + availableNodes.get(0).getYCoord());
+            //System.out.println("X: " + availableNodes.get(0).getXCoord() + "Y: " + availableNodes.get(0).getYCoord());
             Node nextNode = availableNodes.get(0);
             currentNode = nextNode;
             nextNode = null;
             availableNodes.remove(0);
             nodesVisited = currentNode.getGCost();
         }
-        return availableNodes;
+        ArrayList<Node> path = new ArrayList<Node>();
+        while(currentNode != startingNode)
+        {
+            path.add(currentNode);
+            currentNode = currentNode.getPreviousNode();
+        }
+        return path;
     }
 }
