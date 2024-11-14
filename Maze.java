@@ -207,6 +207,7 @@ public class Maze extends JPanel implements ActionListener {
                 if(i-1 >= 0){ w = nodeGraph[i-1][j]; }
                 
                 nodeGraph[i][j].setNeighbors(n, e, s, w);
+                nodeGraph[i][j].resetCost();
 
             }
         }

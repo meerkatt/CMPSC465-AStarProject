@@ -6,18 +6,17 @@ public class Path{
     private Node currentNode;
     private double nodesVisited;
 
-    private ArrayList<Node> availableNodes;
 
     public Path(Node start, Node end) {
         this.startingNode = start;
         this.goalNode = end;
         this.currentNode = start;
-        availableNodes = new ArrayList<Node>();
     }
 
     public Node getCurrentNode() {
         return currentNode;
     }
+
 
     public double distanceCalculator(int x1, int y1, int x2, int y2) {
         double xDifference = Math.abs(x1-x2);
@@ -60,6 +59,7 @@ public class Path{
 
     public ArrayList<Node> traverse() {
         nodesVisited = 0;
+        ArrayList<Node> availableNodes = new ArrayList<Node>();
         while(currentNode != goalNode) {
             for(int i = 0; i < 4; i++) {
                 Node[] neighbors = currentNode.getNeighbors();

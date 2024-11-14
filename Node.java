@@ -119,6 +119,11 @@ public class Node implements Comparable{
         this.yCoord = y;
     }
 
+    public void resetCost(){
+        this.gCost = 0.0;
+        this.hCost = 0.0;
+        this.totalCost = 0.0;
+    }
 
     //// Accessors
     public Node[] getNeighbors()
