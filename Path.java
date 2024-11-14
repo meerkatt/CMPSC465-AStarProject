@@ -64,20 +64,25 @@ public class Path{
             for(int i = 0; i < 4; i++) {
                 Node[] neighbors = currentNode.getNeighbors();
                 Node element = neighbors[i];
-                if(neighbors != null && element != null) {
-                    if(element.getTotalCost() == 0.0) {
-                        if(element.getGCost() == 0.0) {
-                            element.setGCost(gCostCalculator());
+                if(neighbors != null) {
+                    if(element != null){
+                        if(element.getTotalCost() == 0.0) {
+                            if(element.getGCost() == 0.0) {
+                                element.setGCost(gCostCalculator());
+                                element.setPreviousNode(currentNode);
+                            }
+                            element.setHCost(hCostCalculator(element));
+                            element.setTotalCost(totalCostCalculator(element));
+                            availableNodes.add(element);
                         }
-                        element.setHCost(hCostCalculator(element));
-                        element.setTotalCost(totalCostCalculator(element));
-                        element.setPreviousNode(currentNode);
-                        availableNodes.add(element);
                     }
                 }
             }
             sortNodes(availableNodes);
-            //System.out.println("X: " + availableNodes.get(0).getXCoord() + "Y: " + availableNodes.get(0).getYCoord());
+            if(availableNodes.isEmpty())
+            {
+                return null;
+            }
             Node nextNode = availableNodes.get(0);
             currentNode = nextNode;
             nextNode = null;

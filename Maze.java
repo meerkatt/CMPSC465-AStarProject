@@ -146,7 +146,7 @@ public class Maze extends JPanel implements ActionListener {
         final int[] index = {0}; // Mutable index for lambda expression
 
         // Timer to animate path traversal with a 100 ms delay
-        Timer timer = new Timer(1 / 60, (ActionEvent e) -> {
+        Timer timer = new Timer(100, (ActionEvent e) -> {
             if (index[0] < path.size()) {
                 Node node = path.get(index[0]);
                 int x1 = node.getXCoord();
