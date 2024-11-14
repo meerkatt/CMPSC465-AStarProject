@@ -16,11 +16,13 @@ public class Maze extends JPanel implements ActionListener {
     private Cell endCell;
     private Node startingNode;
     private Node endNode;
+    private float wallChance = 0.3f;
     
-    public Maze(int width, int height) {
+    public Maze(int width, int height, float wallChance) {
         super();
-        maze = new Cell[width][height];
-        nodeGraph = new Node[width][height];
+        this.maze = new Cell[width][height];
+        this.nodeGraph = new Node[width][height];
+        this.wallChance = wallChance;
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -29,7 +31,7 @@ public class Maze extends JPanel implements ActionListener {
             }
         }
 
-        setGraphNeighbors(width, height);
+        this.setGraphNeighbors(width, height);
 
         // Add Mouse Listener for press detection
         addMouseListener(new MouseAdapter() {
@@ -171,7 +173,7 @@ public class Maze extends JPanel implements ActionListener {
         this.resetMaze();
         for (Cell[] mazeRow : maze) {
             for (Cell cell : mazeRow) {
-                if (Math.random() < 0.3) {
+                if (Math.random() < this.wallChance) {
                     cell.setType(CellType.WALL);
                 }
             }
