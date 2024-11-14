@@ -143,7 +143,9 @@ public class Maze extends JPanel implements ActionListener {
     // just a helper method to animate the path
     private void animatePath(ArrayList<Node> path) {
         // Use an index to keep track of the current node
-        final int[] index = {0}; // Mutable index for lambda expression
+        // Clever hack to bypass Lambda expressions
+        // 1 because we don't want to display the  starting node a as a path
+        final int[] index = {1};
 
         // Timer to animate path traversal with a 100 ms delay
         Timer timer = new Timer(100, (ActionEvent e) -> {
